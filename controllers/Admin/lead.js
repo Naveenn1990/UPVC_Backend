@@ -410,6 +410,8 @@ exports.purchaseLead = async (req, res) => {
     const pricePerSlot = actualPrice / slotsToBuy;
     const freePerSlot = freeSqftToUse / slotsToBuy;
 
+    // slotsToBuy=6
+
 
     // Push seller multiple times based on slotsToBuy
     for (let i = 0; i < slotsToBuy; i++) {

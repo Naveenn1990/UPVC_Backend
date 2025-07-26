@@ -95,7 +95,7 @@ const SellerSchema = new mongoose.Schema({
   //new fields :
 
   freeQuota: {
-    currentMonthQuota: { type: Number, default: 500 },
+    currentMonthQuota: { type: Number, default: 200 },
     nextResetDate: { type: Date, default: () => {
       const now = new Date();
       now.setMonth(now.getMonth() + 1);
@@ -129,7 +129,7 @@ SellerSchema.methods.checkQuotaReset = function() {
   const now = new Date();
   if (now >= this.freeQuota.nextResetDate) {
     this.freeQuota = {
-      currentMonthQuota: 500,
+      currentMonthQuota: 200,
       usedQuota: 0,
       nextResetDate: new Date(now.setMonth(now.getMonth() + 1))
     };

@@ -95,7 +95,7 @@ const leadSchema = new mongoose.Schema({
     },
     timeline: {
       type: String,
-      enum: ['immediate', '1-3 months', '3-6 months', '6+ months'],
+      enum: ['0-30 days', '31-60 days', 'above 60 days'],
       required: true
     }
   },
@@ -145,45 +145,47 @@ const leadSchema = new mongoose.Schema({
 });
 
 // Update timestamps and calculated fields before save
-leadSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
+
+// leadSchema.pre('save', function(next) {
+//   this.updatedAt = Date.now();
   
-  // Recalculate totals if quotes are modified
-  if (this.isModified('quotes')) {
-    this.totalSqft = this.quotes.reduce((total, quote) => total + quote.sqft * quote.quantity, 0);
-    this.totalQuantity = this.quotes.reduce((total, quote) => total + quote.quantity, 0);
-    this.pricePerSqft = 6250 / (this.totalSqft * 6);
-  }
+//   // Recalculate totals if quotes are modified
+//   if (this.isModified('quotes')) {
+//     this.totalSqft = this.quotes.reduce((total, quote) => total + quote.sqft * quote.quantity, 0);
+//     this.totalQuantity = this.quotes.reduce((total, quote) => total + quote.quantity, 0);
+//     this.pricePerSqft = 6250 / (this.totalSqft * 6);
+//   }
   
-  next();
-});
+//   next();
+// });
 
 // Add pre-save hook to calculate slots and pricing
-leadSchema.pre('save', function(next) {
-  // Recalculate totals if quotes are modified
-  if (this.isModified('quotes')) {
-    this.totalSqft = this.quotes.reduce((total, quote) => total + quote.sqft * quote.quantity, 0);
-    this.totalQuantity = this.quotes.reduce((total, quote) => total + quote.quantity, 0);
+
+// leadSchema.pre('save', function(next) {
+//   // Recalculate totals if quotes are modified
+//   if (this.isModified('quotes')) {
+//     this.totalSqft = this.quotes.reduce((total, quote) => total + quote.sqft * quote.quantity, 0);
+//     this.totalQuantity = this.quotes.reduce((total, quote) => total + quote.quantity, 0);
     
-    // Calculate dynamic slots and pricing
-    const baseValue = this.totalSqft * this.basePricePerSqft;
-    const targetProfit = 6250;
+//     // Calculate dynamic slots and pricing
+//     const baseValue = this.totalSqft * this.basePricePerSqft;
+//     const targetProfit = 6250;
     
-    if (baseValue * 6 > targetProfit) {
-      // Calculate optimal slots to keep near target profit
-      this.maxSlots = Math.max(1, Math.floor(targetProfit / baseValue));
-      this.dynamicSlotPrice = targetProfit / this.maxSlots;
-      this.overProfit = true;
-    } else {
-      // For smaller leads, keep 6 slots
-      this.maxSlots = 6;
-      this.dynamicSlotPrice = baseValue;
-    }
+//     if (baseValue * 6 > targetProfit) {
+//       // Calculate optimal slots to keep near target profit
+//       this.maxSlots = Math.max(1, Math.floor(targetProfit / baseValue));
+//       this.dynamicSlotPrice = targetProfit / this.maxSlots;
+//       this.overProfit = true;
+//     } else {
+//       // For smaller leads, keep 6 slots
+//       this.maxSlots = 6;
+//       this.dynamicSlotPrice = baseValue;
+//     }
     
-    this.availableSlots = this.maxSlots;
-  }
-  next();
-});
+//     this.availableSlots = this.maxSlots;
+//   }
+//   next();
+// });
 
 
 const Lead = mongoose.model('Lead', leadSchema);
