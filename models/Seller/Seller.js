@@ -91,6 +91,10 @@ const SellerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lead'
   }],
+  isVerified:{
+    type: Boolean,
+    default: false
+  },
 
   //new fields :
 
