@@ -3,6 +3,7 @@ const User = require('../../models/Buyer/User');
 const Seller = require('../../models/Seller/Seller');
 const WindowSubOption = require('../../models/Admin/WindowSubOptions');
 const Category = require('../../models/Admin/Category');
+const Quote = require('../../models/Buyer/Quote');
 
 // Create a new lead
 // exports.createLead = async (req, res) => {
@@ -78,6 +79,7 @@ exports.createLead = async (req, res) => {
     const validatedQuotes = [];
 
     for (const quote of quotes) {
+      console.log("quote : " , quote)
       const product = await WindowSubOption.findById(quote.product);
       if (!product) {
         return res.status(404).json({ 
@@ -106,6 +108,16 @@ exports.createLead = async (req, res) => {
         sqft,
       });
     }
+
+    const bulkOps = quotes.map(q => ({
+      updateOne: {
+        filter: { _id: q._id },
+        update: { $set: { isGenerated: q.isGenerated } }
+      }
+    }));
+    console.log("bulkOps : " , bulkOps)
+    // Execute all updates at once
+    await Quote.bulkWrite(bulkOps);
 
     const lead = new Lead({
       buyer: req.user._id,

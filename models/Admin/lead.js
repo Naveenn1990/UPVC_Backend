@@ -14,6 +14,10 @@ const quoteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  isGenerated : {
+    type: Boolean,
+    default: false
+  },
   installationLocation: {
     type: String,
     required: true

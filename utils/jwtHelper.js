@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 exports.signOTPToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '180d' });
 };
 
 exports.verifyOTPToken = (token) => {
