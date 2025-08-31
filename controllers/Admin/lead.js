@@ -335,6 +335,22 @@ exports.purchaseLead = async (req, res) => {
       });
     }
     console.log("Seller : " , seller)
+
+    // Check if total sqft is <= 50 and seller already purchased this lead
+    if (lead.totalSqft <= 50) {
+      console.log("Yes less than 50")
+      const alreadyPurchased = lead.seller.some(s => s.sellerId.toString() === sellerId.toString());
+      console.log("alreadyPurchased : " , alreadyPurchased )
+      if (alreadyPurchased) {
+        return res.status(400).json({
+          success: false,
+          // message: 'You have already purchased this small lead (≤ 50 sqft). Duplicate purchase is not allowed.'
+          message: 'You can only purchase this lead once'
+          // have already purchased this small lead (≤ 50 sqft). Duplicate purchase is not allowed.'
+        });
+      }
+    }
+
      // Verify the seller has enough remaining quota if using free quota
     // if (useFreeQuota) {
     //   // const seller = await Seller.findById(req.sellerId);
@@ -350,7 +366,7 @@ exports.purchaseLead = async (req, res) => {
     //   await seller.save();
     // }
 
-        // Check quota reset
+    // Check quota reset
     const now = new Date();
     if (now >= seller.freeQuota.nextResetDate) {
       seller.freeQuota.currentMonthQuota = 500;

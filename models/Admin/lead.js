@@ -148,6 +148,66 @@ const leadSchema = new mongoose.Schema({
   }
 });
 
+function enforceUniqueSellerIfSmallSqft(leadDoc) {
+  const totalSqft = leadDoc.quotes.reduce((sum, q) => sum + (q.sqft || 0) * (q.quantity || 0), 0);
+
+  if (totalSqft <= 50) {
+    const sellerIds = leadDoc.seller.map(s => s.sellerId?.toString());
+    const uniqueSellerIds = [...new Set(sellerIds)];
+
+    if (sellerIds.length !== uniqueSellerIds.length) {
+      throw new Error('For leads ≤ 50 sqft, sellers must be unique.');
+    }
+  }
+}
+
+// leadSchema.pre('save', function (next) {
+//   enforceUniqueSellerIfSmallSqft(this);
+//   next();
+// });
+
+// leadSchema.pre('findOneAndUpdate', async function (next) {
+//   const docToUpdate = await this.model.findOne(this.getQuery());
+//   if (docToUpdate) {
+//     const update = this.getUpdate();
+    
+//     // Simulate updated seller list
+//     let newSellerList = docToUpdate.seller || [];
+//     if (update.$push && update.$push.seller) {
+//       newSellerList = [...newSellerList, update.$push.seller];
+//     }
+//     if (update.$set && update.$set.seller) {
+//       newSellerList = update.$set.seller;
+//     }
+
+//     const simulatedDoc = {
+//       ...docToUpdate.toObject(),
+//       seller: newSellerList
+//     };
+
+//     enforceUniqueSellerIfSmallSqft(simulatedDoc);
+//   }
+//   next();
+// });
+
+
+// leadSchema.pre('save', function (next) {
+//   // Calculate totalSqft dynamically before saving
+//   const totalSqft = this.quotes.reduce((sum, quote) => sum + (quote.sqft || 0) * (quote.quantity || 0), 0);
+  
+//   if (totalSqft <= 50) {
+//     const sellerIds = this.seller.map(s => s.sellerId?.toString());
+//     const uniqueSellerIds = [...new Set(sellerIds)];
+
+//     if (sellerIds.length !== uniqueSellerIds.length) {
+//       return next(new Error('For leads ≤ 50 sqft, sellers must be unique.'));
+//     }
+//   }
+
+//   next();
+// });
+
+
 // Update timestamps and calculated fields before save
 
 // leadSchema.pre('save', function(next) {
@@ -190,7 +250,6 @@ const leadSchema = new mongoose.Schema({
 //   }
 //   next();
 // });
-
 
 const Lead = mongoose.model('Lead', leadSchema);
 
