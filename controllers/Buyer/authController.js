@@ -105,7 +105,7 @@ exports.updateUser = async (req, res) => {
 exports.getBuyerLeads = async (req, res) => {
   try {
     const buyerId = req.user._id;
-    
+    console.log("Confirmed")
     const leads = await Lead.find({ buyer: buyerId })
       .populate({
         path: 'category',
@@ -160,6 +160,14 @@ exports.getBuyerLeads = async (req, res) => {
         projectStage: lead.projectInfo.stage,
         projectTimeline: lead.projectInfo.timeline,
         category: lead.category?.name || 'Standard',
+        quotes: lead.quotes.map(quote => ({
+            productType: quote.productType,
+            productTitle: quote.product?.title || 'Unknown Product',
+            color: quote.color,
+            size: `${quote.height}ft x ${quote.width}ft`,
+            quantity: quote.quantity,
+            features: quote.product?.features || []
+          })),
         categoryVideo: lead.category?.videoUrl 
           ? `http://192.168.1.40:9000/${lead.category.videoUrl}`
           : null,
