@@ -128,9 +128,10 @@ exports.getBuyerLeads = async (req, res) => {
         return {
           id: seller._id,
           brandName: sellerData.brandOfProfileUsed || 'Unknown Brand',
-          video: sellerData.businessProfileVideo 
-            ? `http://192.168.1.40:9000${sellerData.businessProfileVideo}`
-            : 'https://example.com/default-video.mp4',
+          video: 
+          // sellerData.businessProfileVideo ? 
+          `http://10.7.10.49:9000${sellerData.businessProfileVideo}`,
+            // : 'https://example.com/default-video.mp4',
           name: sellerData.contactPerson || 'Unknown',
           contactNo: sellerData.phoneNumber || 'N/A',
           whatsapp: sellerData.phoneNumber || 'N/A',
@@ -138,9 +139,10 @@ exports.getBuyerLeads = async (req, res) => {
           yearsInBusiness: sellerData.yearsInBusiness?.toString() || 'N/A',
           manuCap: '5000 units/month', // Default value
           teamSize: '100', // Default value
-          visitingCard: sellerData.visitingCard 
-            ? `http://192.168.1.40:9000/${sellerData.visitingCard}`
-            : 'https://via.placeholder.com/150x90.png?text=Visiting+Card',
+          visitingCard: 
+          // sellerData.visitingCard ? 
+          `http://localhost:9000/${sellerData.visitingCard}`,
+            // : 'https://via.placeholder.com/150x90.png?text=Visiting+Card',
           quotes: lead.quotes.map(quote => ({
             productType: quote.productType,
             productTitle: quote.product?.title || 'Unknown Product',
