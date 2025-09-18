@@ -309,7 +309,7 @@ exports.getLeadById = async (req, res) => {
 
 exports.purchaseLead = async (req, res) => {
   try {
-    const { leadId, slotsToBuy, useFreeQuota, freeSqftToUse } = req.body;
+    const { leadId, slotsToBuy, useFreeQuota, freeSqftToUse, price } = req.body;
     const sellerId = req.seller._id
 
     if (!leadId || !sellerId || !slotsToBuy || slotsToBuy <= 0) {
