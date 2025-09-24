@@ -310,6 +310,8 @@ exports.getLeadById = async (req, res) => {
 exports.purchaseLead = async (req, res) => {
   try {
     const { leadId, slotsToBuy, useFreeQuota, freeSqftToUse, price } = req.body;
+    // console.log("price : " , price)
+    // return
     const sellerId = req.seller._id
 
     if (!leadId || !sellerId || !slotsToBuy || slotsToBuy <= 0) {
@@ -447,9 +449,10 @@ exports.purchaseLead = async (req, res) => {
         sellerId,
         purchasedAt: now,
         pricePaid: pricePerSlot,
-        freeQuotaUsed: freePerSlot // Distributed evenly but from single 100 limit
+        freeQuotaUsed: freePerSlot, // Distributed evenly but from single 100 limit
       });
     }
+    lead.price = price //final price coming from frontend 
 
     lead.availableSlots -= slotsToBuy; 
 

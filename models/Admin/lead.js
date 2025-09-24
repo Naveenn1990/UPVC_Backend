@@ -57,8 +57,11 @@ const leadSchema = new mongoose.Schema({
     purchasedAt: {
       type: Date,
       default: Date.now
-    }
+    },
   }],
+  price: {
+    type: Number
+  },
   quotes: [quoteSchema],
   contactInfo: {
     name: {
