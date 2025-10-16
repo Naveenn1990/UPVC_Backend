@@ -19,6 +19,17 @@ app.use(cors({
   credentials: true
 }));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`\n=== INCOMING REQUEST ===`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`Headers:`, req.headers);
+  console.log(`Body:`, req.body);
+  console.log(`========================\n`);
+  next();
+});
+
 app.use(express.json());  
 app.use(express.urlencoded({ extended: true })); 
 

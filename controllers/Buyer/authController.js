@@ -4,26 +4,51 @@ const generateOTP = require('../../utils/generateOTP');
 const { signOTPToken } = require('../../utils/jwtHelper');
 
 exports.login = async (req, res) => {
-  const { name, mobileNumber } = req.body;
-  if (!name || !mobileNumber || mobileNumber.length !== 10) {
-    return res.status(400).json({ message: 'Invalid input' });
+  try {
+    console.log("=== LOGIN REQUEST RECEIVED ===");
+    console.log("Request body:", req.body);
+    console.log("Request headers:", req.headers);
+    
+    const { mobileNumber } = req.body;
+    console.log("Mobile number received:", mobileNumber);
+    
+    if (!mobileNumber || mobileNumber.length !== 10) {
+      console.log("Invalid mobile number:", mobileNumber);
+      return res.status(400).json({ message: 'Invalid mobile number' });
+    }
+
+    console.log("Generating OTP...");
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000); // expires in 5 min
+    console.log("OTP generated:", otp);
+
+    console.log("Updating/creating user in database...");
+    const user = await User.findOneAndUpdate(
+      { mobileNumber },
+      { otp, otpExpires },
+      { new: true, upsert: true }
+    );
+    console.log("User found/created:", user._id);
+
+    console.log("Generating JWT token...");
+    const token = signOTPToken({ mobileNumber, userId: user._id });
+    console.log("Token generated successfully");
+
+    console.log("=== SENDING SUCCESS RESPONSE ===");
+    return res.status(200).json({
+      message: 'OTP sent',
+      otp,
+      token
+    });
+  } catch (error) {
+    console.log("=== LOGIN ERROR ===");
+    console.log("Error message:", error.message);
+    console.log("Error stack:", error.stack);
+    return res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message 
+    });
   }
-
-  const otp = generateOTP();
-  const otpExpires = new Date(Date.now() + 5 * 60 * 1000); // expires in 5 min
-
-  const user = await User.findOneAndUpdate(
-    { mobileNumber },
-    { name, otp, otpExpires },
-    { new: true, upsert: true }
-  );
-
-  console.log("Otp.............",otp)
- 
-  return res.status(200).json({
-    message: 'OTP sent',
-    otp,
-  });
 };
   
 exports.verifyOTP = async (req, res) => {
@@ -42,14 +67,13 @@ exports.verifyOTP = async (req, res) => {
   // Include user._id in the token payload
   const token = signOTPToken({ 
     mobileNumber, 
-    userId: user._id,  // Add this line
-    name: user.name    // Optional: include name if needed
+    userId: user._id
   });
   return res.status(200).json({ 
     message: 'OTP verified. Login successful', 
     token,
     user: {
-      name: user.name,
+      name: user.name || '',
       mobileNumber: user.mobileNumber,
       id: user._id,
     } 
