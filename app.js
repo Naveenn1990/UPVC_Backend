@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
 dotenv.config();
-
 connectDB();
 
 const app = express(); 
@@ -16,7 +15,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Range'],
   exposedHeaders: ['Content-Length', 'Content-Range'],
-  credentials: true
+  credentials: true          
 }));
 
 // Request logging middleware
@@ -41,12 +40,12 @@ app.use((req, res, next) => {
   next();
 }); 
 
-app.use('/api/auth', require('./routes/Buyer/authRoutes'));
+app.use('/api/auth', require('./routes/Buyer/authRoutes'));   
 app.use('/api/buyer', require('./routes/Buyer/authRoutes'));
 app.use('/api/admin', require('./routes/Admin/authRoutes'));
 app.use('/api/banner', require('./routes/Admin/bannerRoutes'));
-app.use('/api/homepage', require('./routes/Admin/Homepage'));
-app.use('/api/pricing', require('./routes/Admin/pricingRoutes'))
+app.use('/api/homepage', require('./routes/Admin/Homepage')); 
+app.use('/api/pricing', require('./routes/Admin/pricingRoutes'));
 app.use('/api/feedback', require('./routes/Buyer/feedbackRoutes'));
 app.use('/api/color' , require('./routes/Buyer/colorRoutes'));
 app.use('/api/options',require('./routes/Admin/optionRoutes'));

@@ -1,7 +1,8 @@
 const WindowOption = require('../../models/Admin/WindowOption');
 const WindowSubOptions = require('../../models/Admin/WindowSubOptions');
 
-// Get all window options with pagination
+// Get all window options with pagination 
+
 exports.getAllOptions = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -25,7 +26,6 @@ exports.getAllOptions = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
 // Create new window option
 exports.createOption = async (req, res) => {
     try {
@@ -46,9 +46,11 @@ exports.createOption = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-};
+};  
 
-// Update window option (partial update)
+// Update window option (partial update) 
+
+
 exports.updateOption = async (req, res) => {
     try {
         const { id } = req.params;
@@ -69,8 +71,7 @@ exports.updateOption = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-};
-
+};                                                     
 // Delete window option
 exports.deleteOption = async (req, res) => {
     try {
@@ -85,7 +86,7 @@ exports.deleteOption = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+};  
 
 // Get predefined window options
 exports.getPredefinedOptions = async (req, res) => {
