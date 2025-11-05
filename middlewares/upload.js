@@ -8,8 +8,9 @@ const defaultAllowedTypes = ['image/', 'video/', 'application/pdf'];
 
 // Video-specific configuration
 const videoConfig = {
-  allowedTypes: ['video/mp4', 'video/webm', 'video/ogg' , ''],
-  maxSize: 50 * 1024 * 1024, // 50MB
+  allowedTypes: ['video/mp4', 'video/webm', 'video/ogg'],
+  // Increase max upload size for videos (e.g., 200MB)
+  maxSize: 200 * 1024 * 1024,
   destination: 'uploads/sellers/videos'
 };
 

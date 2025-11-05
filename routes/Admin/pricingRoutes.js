@@ -8,20 +8,13 @@ const {
 } = require('../../controllers/Admin/pricingController');
 
 router.post('/video', 
-  // upload('video', ['video/*']).single('video'), 
-      upload('video').fields([
-        { name: 'video', maxCount: 1 },
-        { name: 'sponsorLogo', maxCount: 1 }
-      ]),
+  // accept any file fields to be resilient to client naming
+  upload('video').any(),
   createVideoPrice);
 router.get('/video', getAllVideoPrices);
 router.get('/video/:id', getVideoPriceById);
 router.put('/video/:id', 
-  // upload('video', ['video/*']).single('video'), 
-        upload('video').fields([
-        { name: 'video', maxCount: 1 },
-        { name: 'sponsorLogo', maxCount: 1 }
-      ]),
+  upload('video').any(),
   updateVideoPrice);
 router.delete('/video/:id', deleteVideoPrice);
 router.post('/heading', upload('heading', ['image/*']).single('image'), createPriceHeading);

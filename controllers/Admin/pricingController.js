@@ -10,7 +10,17 @@ const normalizeFilePath = (path) => {
 exports.createVideoPrice = async (req, res) => {
   try {
     const { title, subtitle, description, } = req.body;
-    const file = req.file;
+    // Support both .single('video') and .fields. If field name differs, fall back to first file.
+    let file = req.file || req.files?.video?.[0];
+    if (!file && Array.isArray(req.files) && req.files.length > 0) {
+      file = req.files[0];
+    }
+    if (!file && req.files && typeof req.files === 'object') {
+      const firstKey = Object.keys(req.files)[0];
+      if (firstKey && Array.isArray(req.files[firstKey]) && req.files[firstKey][0]) {
+        file = req.files[firstKey][0];
+      }
+    }
 
     if (!file) return res.status(400).json({ error: 'Video file is required' });
 
@@ -61,7 +71,16 @@ exports.getVideoPriceById = async (req, res) => {
 exports.updateVideoPrice = async (req, res) => {
   try {
     const { title, subtitle, description, sponsorText } = req.body;
-    const file = req.file;
+    let file = req.file || req.files?.video?.[0];
+    if (!file && Array.isArray(req.files) && req.files.length > 0) {
+      file = req.files[0];
+    }
+    if (!file && req.files && typeof req.files === 'object') {
+      const firstKey = Object.keys(req.files)[0];
+      if (firstKey && Array.isArray(req.files[firstKey]) && req.files[firstKey][0]) {
+        file = req.files[firstKey][0];
+      }
+    }
 
     const updatedData = { title, subtitle, description, sponsorText };
     if (file) updatedData.video = normalizeFilePath(file.path);
