@@ -6,10 +6,11 @@ const dotenv = require('dotenv');
 dotenv.config();                   
 
 const PORT = process.env.PORT || 9000; 
-
+const HOST = process.env.HOST || '0.0.0.0';
 
 const server = http.createServer(app);
 
-server.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+server.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
