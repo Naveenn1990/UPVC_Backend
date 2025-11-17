@@ -94,8 +94,12 @@ app.use('/api/admin', require('./routes/Admin/buyerManagement'));
 app.use('/api/sellers', require('./routes/Seller/sellerRoutes')); 
 app.use('/api/quotes', require('./routes/Buyer/quoteRoutes'));
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route Not Found' });
+// Serve static files from the 'build' directory (CSS, JS, images, etc.)
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Catch-all handler: send back React's index.html file for any non-API routes
+app.get("*", (req, res) => {
+  return  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 module.exports = app;
